@@ -32,7 +32,7 @@ def handle_input():
     form = ReusableForm(request.form)
    
     # Read the target folder path from the environment variable
-    folder_path = os.environ["TARGET_FOLDER"]
+    folder_path = os.environ["FOLDER_PATH"]
 
     if (request.method == 'POST'):
         message = request.form['message']
