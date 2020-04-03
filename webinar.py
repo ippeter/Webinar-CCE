@@ -1,6 +1,5 @@
 import subprocess
-#import re
-#import socket
+import os
 import logging
 
 from flask import Flask, jsonify, request, render_template, flash
@@ -31,15 +30,17 @@ def handle_input():
     
     # Proceed to the form
     form = ReusableForm(request.form)
-    print(form.errors)
-    
+   
+    # Read the target folder path from the environment variable
+    folder_path = os.environ["TARGET_FOLDER"]
+
     if (request.method == 'POST'):
         message = request.form['message']
  
         if (form.validate()):
             # Handle the message: create a file with a name of the message text without spaces
             try:
-                open("/var/tmp/" + message, "w+", encoding='utf-8').close()
+                open(os.path.join(folder_path, message), "w+", encoding='utf-8').close()
             except:
                 LOG.info("Error creating a file from the message \"{}\"".format(message))
                 flash('Epic fail. Something went wrong...')
