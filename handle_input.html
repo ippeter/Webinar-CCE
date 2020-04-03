@@ -11,7 +11,7 @@
     {% for message in messages %}
       {% if loop.index == 1 %}
         <h1 align="center">Welcome!</h1>
-	<p align="center" style="font-size: 1.5em;">Kubernetes Node Name is <b><font color="darkred">{{ message[1] }}</font></b></p>
+	<p align="center" style="font-size: 1.5em;">Kubernetes Pod Name is <b><font color="darkred">{{ message[1] }}</font></b></p>
 	<hr>
       {% else %}
         <div>

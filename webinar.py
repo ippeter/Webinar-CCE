@@ -14,8 +14,8 @@ class ReusableForm(Form):
 
 # Instantiate our Node
 app = Flask(__name__)
-#app.config.from_object(__name__)
-#app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 # Enable logging
 LOG = create_logger(app)
@@ -24,10 +24,10 @@ LOG.setLevel(logging.INFO)
 @app.route("/", methods=['GET', 'POST'])
 def handle_input():
     # Get node name and pod IP address, then pass it to the template
-    node_name = subprocess.run(["hostname"])
+    pod_name = subprocess.run(["hostname"], stdout=subprocess.PIPE).stdout.decode(encoding="utf-8").rstrip('\n')
 
     # Send node name to the template for rendering
-    flash(node_name)
+    flash(pod_name)
     
     # Proceed to the form
     form = ReusableForm(request.form)
@@ -39,12 +39,12 @@ def handle_input():
         if (form.validate()):
             # Handle the message: create a file with a name of the message text without spaces
             try:
-                open("".join(message.split()), "w+", encoding='utf-8').close()
+                open("/var/tmp/" + message, "w+", encoding='utf-8').close()
             except:
-                LOG.info("Error creating a file from the message {}".format(message))
+                LOG.info("Error creating a file from the message \"{}\"".format(message))
                 flash('Epic fail. Something went wrong...')
             else:
-                LOG.info("Message {} received and written to a file".format(message))
+                LOG.info("Message \"{}\" received at host {} and written to a file".format(message, pod_name))
                 flash('Thank you. Your message was written to a file!')
         else:
             flash('Please enter some text. The input field must not be empty.')
